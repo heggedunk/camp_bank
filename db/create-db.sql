@@ -13,7 +13,7 @@ CREATE TABLE camper
     id serial NOT NULL
       CONSTRAINT camper_pkey
       PRIMARY KEY,
-    name int,
+    name VARCHAR(20),
     prompt varchar(20),
     session_id INT
       CONSTRAINT session_id_fk

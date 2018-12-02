@@ -6,3 +6,6 @@ INSERT INTO public."item" (item_desc) VALUES  ('Concessions');
 INSERT INTO public."item" (item_desc) VALUES  ('Shirt Shack');
 INSERT INTO public."item" (item_desc) VALUES  ('Withdrawal');
 
+insert into public."session" (description, active) values ('Test-1', TRUE);
+insert into public."session" (description) values ('Test-2');
+insert into public."session" (description) values ('Test-3');
