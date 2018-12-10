@@ -1,0 +1,14 @@
+{% if form.errors %}
+    <div class="bg-danger mt-3 border border-dark rounded">
+        <div class="m-2">
+            <h2>Oops! There was a problem</h2>
+            <ul>
+                {% for error_name in form.errors %}
+                    {% for error in form.errors[error_name] %}
+                        <li>{{ form[error_name].label }}: {{ error }}</li>
+                    {% endfor %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endif %}

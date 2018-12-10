@@ -14,6 +14,7 @@ CREATE TABLE camper
       CONSTRAINT camper_pkey
       PRIMARY KEY,
     name VARCHAR(20),
+    swim_number INT,
     prompt varchar(20),
     session_id INT
       CONSTRAINT session_id_fk
@@ -38,7 +39,7 @@ CREATE TABLE transaction
     camper_id INTEGER
       CONSTRAINT camper_id_fk
       REFERENCES "camper",
-    time timestamp,
+    time VARCHAR(30),
     item_id INT
       CONSTRAINT item_id_fk
       REFERENCES "item",

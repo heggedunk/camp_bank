@@ -1,2 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <title>{% block title %}Camp Bank{% endblock %}</title>
+        <meta name="theme-color" content="#ffffff">
+
+    </head>
+
+<body style="font-family: 'Roboto', sans-serif;">
 {% include "navbar.html" %}
 
+<!-- Extended content -->
+<div class="container-fluid">
+
+    <div class="row">
+        <div class="col-md-1 bg-dark">
+
+        </div>
+
+        <div class="col-md-10">
+            <div class="bg-light rounded p-4 m-3">
+                {% with messages = get_flashed_messages() %}
+                    {% if messages %}
+                        {% for message in messages %}
+                            <div class="alert alert-primary">{{ message }}</div>
+                        {% endfor %}
+                    {% endif %}
+                {% endwith %}
+
+                {% block content %}
+                {% endblock %}
+            </div>
+
+
+        </div>
+
+        <div class="col-md-1 bg-dark">
+
+        </div>
+    </div>
+</div>

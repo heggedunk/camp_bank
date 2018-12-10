@@ -4,7 +4,7 @@ import psycopg2.extras
 # import info
 
 # Database tools
-data_source_name = 'host=faraday.cse.taylor.edu db_name=camp_bank password=03059710'
+data_source_name = 'host=faraday.cse.taylor.edu dbname=camp_bank user=camp_bank password=03059710'
 
 # 23 Functions to test
 
@@ -33,12 +33,90 @@ def disconnect():
     g.connection.close()
 
 
-def add_camper(name, prompt):
+def add_camper(name, swim_number, prompt):
     query = '''
-    INSERT INTO "camper" (name, prompt)
-    VALUES (%(name)s, %(prompt)s)'''
-    g.cursor.execute(query, {'name': name, 'prompt': prompt})
+    INSERT INTO "camper" (name, swim_number, prompt)
+    VALUES (%(name)s, %(swim_number)s, %(prompt)s)'''
+    g.cursor.execute(query, {'name': name, 'swim_number': swim_number, 'prompt': prompt})
     g.connection.commit()
     return g.cursor.rowcount
 
+
+def get_camper(id):
+    query = '''
+    SELECT *
+    FROM "camper"
+    WHERE camper.id = %(id)s'''
+    g.cursor.execute(query, {'id': id})
+    return g.cursor.fetchone()
+
+
+def get_session(id):
+    query = '''
+    SELECT description
+    FROM session
+    WHERE session.id = %(id)s'''
+    g.cursor.execute(query, {'id': id})
+    return g.cursor.fetchone()
+
+
+def load_camper(swim_number):
+    query = '''
+    SELECT camper.id
+    FROM "camper"
+    INNER JOIN session ON camper.session_id = session.id
+    WHERE camper.swim_number = %(swim_number)s AND session.active = TRUE'''
+    g.cursor.execute(query, {'swim_number': swim_number})
+    return g.cursor.fetchone()
+
+
+def post_transaction(camper_id, time, item_id, amount):
+    query = '''
+    INSERT INTO "transaction" (camper_id, time, item_id, amount)
+    VALUES (%(camper_id)s, %(time)s, %(item_id)s,%(amount)s)'''
+    g.cursor.execute(query, {'camper_id': camper_id, 'time': time, 'item_id': item_id, 'amount': amount})
+    return g.cursor.rowcount
+
+
+def find_transactions(id):
+    query = '''
+    SELECT *
+    FROM transaction
+    INNER JOIN transaction ON transaction.camper_id = camper.id
+    WHERE camper.id = %(id)s'''
+    g.cursor.execute(query, {'id': id})
+    return g.cursor.fetchall()
+
+
+def add_session(description, active):
+    query='''
+    INSERT INTO "session" (description, active)
+    VALUES (%(description)s, %(active)s)'''
+    g.cursor.execute(query, {'description':description, 'active':active})
+    return g.cursor.rowcount
+
+
+def get_sessions():
+    query = '''
+    SELECT id
+    FROM "session"'''
+    g.cursor.execute(query)
+    return g.cursor.fetchall()
+
+
+def get_desciptions():
+    query = '''
+    SELECT description
+    FROM "session"'''
+    g.cursor.execute(query)
+    return g.cursor.fetchall()
+
+
+def get_description(id):
+    query = '''
+    SELECT description
+    FROM "session"
+    WHERE id = %(id)s'''
+    g.cursor.execute(query, {'id': id})
+    return g.cursor.fetchone()
 

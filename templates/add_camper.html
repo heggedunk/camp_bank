@@ -17,11 +17,15 @@
 
         <!------------------------------------------------------------------------------------>
         <div class="form-group">
-            <b>{{ form.name.label }}</b>{{ form.name(class_="form-control") }}
+            <b>{{ form.add_name.label }}</b>{{ form.add_name(class_="form-control") }}
         </div>
 
         <div class="form-group">
-            <b>{{ form.prompt.label }}</b>{{ form.prompt(class_="form-control") }}
+            <b>{{ form.add_swim_number.label }}</b>{{ form.add_swim_number(class_="form-control") }}
+        </div>
+
+        <div class="form-group">
+            <b>{{ form.add_prompt.label }}</b>{{ form.add_prompt(class_="form-control") }}
         </div>
 
         {{ form.submit(class_="btn btn-primary") }}
@@ -29,3 +33,4 @@
     </form>
 
 {% endblock %}
+
