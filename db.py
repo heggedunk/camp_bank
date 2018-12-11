@@ -12,6 +12,7 @@ data_source_name = 'host=faraday.cse.taylor.edu dbname=camp_bank user=camp_bank 
 data_source_name = os.environ.get('DSN', data_source_name)
 print("DSN is {}".format(data_source_name))
 
+
 # 23 Functions to test
 
 
@@ -102,25 +103,6 @@ def add_session(description, active):
 
 
 def get_sessions():
-    query = '''
-    SELECT id
-    FROM "session"'''
+    query = '''SELECT * FROM "session"'''
     g.cursor.execute(query)
     return g.cursor.fetchall()
-
-
-def get_desciptions():
-    query = '''
-    SELECT description
-    FROM "session"'''
-    g.cursor.execute(query)
-    return g.cursor.fetchall()
-
-
-def get_description(id):
-    query = '''
-    SELECT description
-    FROM "session"
-    WHERE id = %(id)s'''
-    g.cursor.execute(query, {'id': id})
-    return g.cursor.fetchone()

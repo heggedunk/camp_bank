@@ -1,13 +1,15 @@
 from datetime import datetime
 
 from flask import Flask, render_template, flash, redirect, url_for
+from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, BooleanField, IntegerField
+from wtforms import StringField, SubmitField, SelectField, BooleanField, IntegerField, RadioField
 from wtforms.validators import Length, InputRequired
 
 import db
 
 app = Flask(__name__)
+Bootstrap(app)
 app.config['SECRET_KEY'] = 'Super Secret Unguessable Key'
 
 
@@ -47,7 +49,7 @@ class NewCamperForm(FlaskForm):
     add_name = StringField('Name', validators=[InputRequired(message='Name Required'), Length(max=20)])
     add_swim_number = IntegerField('Swim Number', validators=[InputRequired(message='Swim Number Required')])
     add_prompt = StringField('Prompt', validators=[Length(max=20)])
-    submit = SubmitField('Create Account')
+    submit = SubmitField('Add Camper')
 
 
 @app.route('/add-camper', methods=['GET', 'POST'])
@@ -102,21 +104,23 @@ class NewSessionForm(FlaskForm):
     description = StringField('Session Name, Format: (YYYY-#)',
                               validators=[InputRequired(message='Session Name Required'), Length(max=6)])
     active = BooleanField('Active?')
-    Submit = SubmitField('Add Session')
+    submit = SubmitField('Add Session')
 
 
-# class ActiveForm(FlaskForm):
-#   sessions = db.get_sessions()
-#   descriptions = db.get_descriptions()
-#  choiceList = []
-# for i in range(len(sessions)):
-#        choiceList.append((sessions[i], descriptions[i]))
-#
-#   change_active = RadioField("Make Active", choices=choiceList, coerce=int)
-#  Submit = SubmitField('Change Activity')
+class ActiveForm(FlaskForm):
+    change_active = RadioField("Make Active", coerce=int)
+    submit = SubmitField('Change Activity')
+
 
 @app.route('/manage-sessions/', methods=['GET', 'POST'])
 def manage_sessions():
+    # Set up the list of options in the Active Form
+    change_active_form = ActiveForm()
+    choice_list = []
+    for session in db.get_sessions():
+        choice_list.append((session['id'], session['description']))
+    change_active_form.change_active.choices = choice_list
+
     add_session_form = NewSessionForm()
 
     if add_session_form.validate_on_submit():
@@ -127,8 +131,6 @@ def manage_sessions():
             return redirect(url_for('index'))
         else:
             flash('Transaction Failed')
-
-    change_active_form = ActiveForm()
 
     if change_active_form.validate_on_submit():
         pass
