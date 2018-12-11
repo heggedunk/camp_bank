@@ -1,13 +1,18 @@
-from flask import g, flash, session
+import os
+
 import psycopg2
 import psycopg2.extras
-# import info
+from flask import g
 
-# Database tools
+# Jake
 data_source_name = 'host=faraday.cse.taylor.edu dbname=camp_bank user=camp_bank password=03059710'
 
-# 23 Functions to test
+# This is for testing. Use the above value unless an environment
+# variable called 'DSN' is defined.
+data_source_name = os.environ.get('DSN', data_source_name)
+print("DSN is {}".format(data_source_name))
 
+# 23 Functions to test
 
 
 ####OPEN AND CLOSE DATABASE####
@@ -89,10 +94,10 @@ def find_transactions(id):
 
 
 def add_session(description, active):
-    query='''
+    query = '''
     INSERT INTO "session" (description, active)
     VALUES (%(description)s, %(active)s)'''
-    g.cursor.execute(query, {'description':description, 'active':active})
+    g.cursor.execute(query, {'description': description, 'active': active})
     return g.cursor.rowcount
 
 
@@ -119,4 +124,3 @@ def get_description(id):
     WHERE id = %(id)s'''
     g.cursor.execute(query, {'id': id})
     return g.cursor.fetchone()
-

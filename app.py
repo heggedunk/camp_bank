@@ -1,12 +1,11 @@
-from flask import Flask, render_template, flash, redirect, url_for, session, request
-from flask_wtf import FlaskForm
-# from wtforms.fields import FileField
-from wtforms import StringField, SubmitField, SelectField, PasswordField, FloatField, BooleanField, IntegerField, \
-    RadioField
-from wtforms.validators import Email, Length, InputRequired, Regexp, EqualTo, NumberRange
-# from wtforms.fields.html5 import IntegerField
-import db
 from datetime import datetime
+
+from flask import Flask, render_template, flash, redirect, url_for
+from flask_wtf import FlaskForm
+from wtforms import StringField, SubmitField, SelectField, BooleanField, IntegerField
+from wtforms.validators import Length, InputRequired
+
+import db
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'Super Secret Unguessable Key'
@@ -69,7 +68,7 @@ def add_camper():
 class TransactionForm(FlaskForm):
     trans_type = SelectField("Transaction Type",
                              choices=[(1, 'Deposit'), (2, 'Concessions'), (3, 'Shirt Shack'), (4, 'Withdrawal')],
-                             coerce = int)
+                             coerce=int)
     amount = IntegerField("amount", validators=[InputRequired(message='Amount Required')])
     submit = SubmitField('Post Transaction')
 
@@ -100,20 +99,21 @@ def camper_details(id):
 
 
 class NewSessionForm(FlaskForm):
-    description = StringField('Session Name, Format: (YYYY-#)', validators=[InputRequired(message='Session Name Required'), Length(max=6)])
+    description = StringField('Session Name, Format: (YYYY-#)',
+                              validators=[InputRequired(message='Session Name Required'), Length(max=6)])
     active = BooleanField('Active?')
     Submit = SubmitField('Add Session')
 
 
-#class ActiveForm(FlaskForm):
+# class ActiveForm(FlaskForm):
 #   sessions = db.get_sessions()
- #   descriptions = db.get_descriptions()
-  #  choiceList = []
-   # for i in range(len(sessions)):
+#   descriptions = db.get_descriptions()
+#  choiceList = []
+# for i in range(len(sessions)):
 #        choiceList.append((sessions[i], descriptions[i]))
 #
- #   change_active = RadioField("Make Active", choices=choiceList, coerce=int)
-  #  Submit = SubmitField('Change Activity')
+#   change_active = RadioField("Make Active", choices=choiceList, coerce=int)
+#  Submit = SubmitField('Change Activity')
 
 @app.route('/manage-sessions/', methods=['GET', 'POST'])
 def manage_sessions():
