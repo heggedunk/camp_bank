@@ -55,13 +55,15 @@ class NewCamperForm(FlaskForm):
 @app.route('/add-camper', methods=['GET', 'POST'])
 def add_camper():
     camper_form = NewCamperForm()
+    session = db.get_active_session()
     if camper_form.validate_on_submit():
         rowcount = db.add_camper(camper_form.add_name.data,
                                  camper_form.add_swim_number.data,
-                                 camper_form.add_prompt.data)
+                                 camper_form.add_prompt.data,
+                                 session[0])
         if rowcount == 1:
             flash('{}:Camper added Successfully'.format(camper_form.add_name.data))
-            return redirect(url_for('camper_details'))
+            return redirect(url_for('index'))
         else:
             flash('Creation Failed')
     return render_template('add_camper.html', form=camper_form, mode='create')
@@ -103,7 +105,6 @@ def camper_details(id):
 class NewSessionForm(FlaskForm):
     description = StringField('Session Name, Format: (YYYY-#)',
                               validators=[InputRequired(message='Session Name Required'), Length(max=6)])
-    active = BooleanField('Active?')
     submit = SubmitField('Add Session')
 
 
@@ -132,10 +133,18 @@ def manage_sessions():
         else:
             flash('Transaction Failed')
 
-    if change_active_form.validate_on_submit():
-        pass
+    active_session = db.get_active_session()
 
-    return render_template('manage_sessions.html', form1=add_session_form, form2=change_active_form)
+    if change_active_form.validate_on_submit():
+        rowcount = db.change_activity(change_active_form.change_active.data)
+        if rowcount == 1:
+            flash("Activity Updated")
+            return redirect(url_for('index'))
+        else:
+            flash('Change Failed')
+
+    return render_template('manage_sessions.html', form1=add_session_form, form2=change_active_form,
+                           active_session=active_session[1])
 
 
 if __name__ == '__main__':

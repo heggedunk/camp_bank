@@ -39,11 +39,11 @@ def disconnect():
     g.connection.close()
 
 
-def add_camper(name, swim_number, prompt):
+def add_camper(name, swim_number, prompt, session_id):
     query = '''
-    INSERT INTO "camper" (name, swim_number, prompt)
-    VALUES (%(name)s, %(swim_number)s, %(prompt)s)'''
-    g.cursor.execute(query, {'name': name, 'swim_number': swim_number, 'prompt': prompt})
+    INSERT INTO "camper" (name, swim_number, prompt, session_id)
+    VALUES (%(name)s, %(swim_number)s, %(prompt)s, %(session_id)s)'''
+    g.cursor.execute(query, {'name': name, 'swim_number': swim_number, 'prompt': prompt, 'session_id': session_id})
     g.connection.commit()
     return g.cursor.rowcount
 
@@ -106,3 +106,24 @@ def get_sessions():
     query = '''SELECT * FROM "session"'''
     g.cursor.execute(query)
     return g.cursor.fetchall()
+
+
+def get_active_session():
+    query = '''
+    SELECT *
+    FROM "session"
+    WHERE session.active = TRUE'''
+    g.cursor.execute(query)
+    return g.cursor.fetchone()
+
+
+def change_activity(id):
+    query = '''
+    UPDATE "session"
+    SET active = FALSE
+    WHERE active = TRUE;
+    UPDATE "session"
+    SET active = TRUE
+    WHERE id = %(id)s'''
+    g.cursor.execute(query, {'id': id})
+    return g.cursor.rowcount
