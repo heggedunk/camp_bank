@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Activate a Session{% endblock %}
+
+{% block page %}
+    {% include "form_errors.html" %}
+
+    <h2>Activate Session</h2>
+    <h4>Active Session: {{ active_session }}</h4><br>
+    <h4>
+        Only one session can be active at a given time.
+        Activating a session here will deactivate the current session.
+    </h4>
+
+    <form method="POST">
+        {{ form.csrf_token }}
+        {{ form.change_active }}
+        {{ form.submit(class_="btn btn-primary") }}
+    </form>
+{% endblock %}

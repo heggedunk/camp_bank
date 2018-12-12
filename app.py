@@ -3,7 +3,7 @@ from datetime import datetime
 from flask import Flask, render_template, flash, redirect, url_for
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, SelectField, BooleanField, IntegerField, RadioField
+from wtforms import StringField, SubmitField, SelectField, IntegerField, RadioField
 from wtforms.validators import Length, InputRequired
 
 import db
@@ -113,8 +113,21 @@ class ActiveForm(FlaskForm):
     submit = SubmitField('Change Activity')
 
 
-@app.route('/manage-sessions/', methods=['GET', 'POST'])
-def manage_sessions():
+@app.route('/add-session', methods=['GET', 'POST'])
+def create_session():
+    add_session_form = NewSessionForm()
+    if add_session_form.validate_on_submit():
+        rowcount = db.add_session(add_session_form.description.data, False)
+        if rowcount == 1:
+            flash('New Session Added Successfully')
+            return redirect(url_for('index'))
+        else:
+            flash('Transaction Failed')
+    return render_template('add_session.html', form=add_session_form)
+
+
+@app.route('/activate-session', methods=['GET', 'POST'])
+def activate_session():
     # Set up the list of options in the Active Form
     change_active_form = ActiveForm()
     choice_list = []
@@ -122,28 +135,22 @@ def manage_sessions():
         choice_list.append((session['id'], session['description']))
     change_active_form.change_active.choices = choice_list
 
-    add_session_form = NewSessionForm()
-
-    if add_session_form.validate_on_submit():
-        rowcount = db.add_session(add_session_form.description.data,
-                                  add_session_form.active.data)
-        if rowcount == 1:
-            flash('New Session Added Successfully')
-            return redirect(url_for('index'))
-        else:
-            flash('Transaction Failed')
-
     active_session = db.get_active_session()
+    print("ACTIVE SESSION", active_session)
 
     if change_active_form.validate_on_submit():
-        rowcount = db.change_activity(change_active_form.change_active.data)
+        new_active_session = change_active_form.change_active.data
+        print("NEW ACTIVE SESSION", new_active_session)
+
+        rowcount = db.change_activity(new_active_session)
         if rowcount == 1:
             flash("Activity Updated")
             return redirect(url_for('index'))
         else:
             flash('Change Failed')
 
-    return render_template('manage_sessions.html', form1=add_session_form, form2=change_active_form,
+    return render_template('activate_session.html',
+                           form=change_active_form,
                            active_session=active_session[1])
 
 

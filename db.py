@@ -99,6 +99,7 @@ def add_session(description, active):
     INSERT INTO "session" (description, active)
     VALUES (%(description)s, %(active)s)'''
     g.cursor.execute(query, {'description': description, 'active': active})
+    g.connection.commit()
     return g.cursor.rowcount
 
 
@@ -109,10 +110,7 @@ def get_sessions():
 
 
 def get_active_session():
-    query = '''
-    SELECT *
-    FROM "session"
-    WHERE session.active = TRUE'''
+    query = '''SELECT * FROM "session" WHERE session.active = TRUE'''
     g.cursor.execute(query)
     return g.cursor.fetchone()
 
@@ -126,4 +124,5 @@ def change_activity(id):
     SET active = TRUE
     WHERE id = %(id)s'''
     g.cursor.execute(query, {'id': id})
+    g.connection.commit()
     return g.cursor.rowcount

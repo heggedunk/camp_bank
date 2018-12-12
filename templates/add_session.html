@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}Add a New Session{% endblock %}
+
+{% block page %}
+    {% include "form_errors.html" %}
+
+    <h2>Add a Session</h2>
+    <h4>Note: creating a new session does not activate it</h4>
+
+    <form method="POST">
+        {{ form.csrf_token }}
+
+        <div class="form-group">
+            <b>{{ form.description.label }}</b>{{ form.description(class_="form-control") }}
+        </div>
+
+        {{ form.submit(class_="btn btn-primary") }}
+    </form>
+
+{% endblock %}

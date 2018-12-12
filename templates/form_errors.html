@@ -1,25 +1,14 @@
-{% if form1.errors %}
-    <div class="alert alert-danger">
-        <h2>Please correct the following and resubmit</h2>
-        <ul>
-            {% for field_name in form1.errors %}
-                {% for field_error in form1.errors[field_name] %}
-                    <li>{{ form1[field_name].label }}: {{ field_error }}</li>
+{% if form.errors %}
+    <div class="bg-danger mt-3 border border-dark rounded">
+        <div class="m-2">
+            <h2>Oops! There was a problem</h2>
+            <ul>
+                {% for error_name in form.errors %}
+                    {% for error in form.errors[error_name] %}
+                        <li>{{ form[error_name].label }}: {{ error }}</li>
+                    {% endfor %}
                 {% endfor %}
-            {% endfor %}
-        </ul>
-    </div>
-{% endif %}
-
-{% if form2.errors %}
-    <div class="alert alert-danger">
-        <h2>Please correct the following and resubmit</h2>
-        <ul>
-            {% for field_name in form2.errors %}
-                {% for field_error in form2.errors[field_name] %}
-                    <li>{{ form2[field_name].label }}: {{ field_error }}</li>
-                {% endfor %}
-            {% endfor %}
-        </ul>
+            </ul>
+        </div>
     </div>
 {% endif %}
