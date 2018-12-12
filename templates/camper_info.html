@@ -4,14 +4,12 @@
 
 {% block page %}
 
-    {{ camper_name }}
+    <h1>{{ camper_name }}</h1>
     <br>
-    {{ swim_number }}
-    <br>
-    {{ camper_prompt }}
-    <br>
-    {{ camp_session }}
-    <br>
+    <h2>Swim Number: {{ swim_number }}</h2>
+    <h2>Balance: {{ balance }}</h2>
+    <h3>Prompt: {{ camper_prompt }}</h3>
+    <h3>Session: {{ camp_session }}</h3>
 
     {% include 'form_errors.html' %}
 
@@ -30,5 +28,10 @@
         {{ form.submit(class_="btn btn-primary") }}
         <!------------------------------------------------------------------------------------>
     </form>
-
+    <h3>Ledger</h3>
+    <ul>
+        {% for item in range(0,length) %}
+            <li>{{ transaction_lst[item][2:] }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

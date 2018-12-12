@@ -37,7 +37,7 @@ def index():
 
         if camper_id is None:
             camper_exists = False
-            flash("Cannot find Camper")
+            flash("Cannot find Camper, Try another Swim Number or Session")
 
         else:
             flash("Camper Found")
@@ -85,6 +85,15 @@ def camper_details(id):
     camper_prompt = camper_info[3]
     camp_session = db.get_session(camper_info[4])[0]
     trans_form = TransactionForm()
+    transaction_lst = db.find_transactions(camper_info[0])
+    length = len(transaction_lst)
+    print(transaction_lst)
+    balance = 0
+    for i in range(length):
+        if transaction_lst[i][3] == 1:
+            balance += transaction_lst[i][4]
+        else:
+            balance -= transaction_lst[i][4]
 
     if trans_form.validate_on_submit():
         time = datetime.today()
@@ -99,7 +108,8 @@ def camper_details(id):
             flash('Transaction Failed')
 
     return render_template('camper_info.html', form=trans_form, camper_name=camper_name, swim_number=swim_number,
-                           camper_prompt=camper_prompt, camp_session=camp_session)
+                           camper_prompt=camper_prompt, camp_session=camp_session, transaction_lst=transaction_lst,
+                           length=length, balance=balance)
 
 
 class NewSessionForm(FlaskForm):
@@ -135,7 +145,10 @@ def activate_session():
         choice_list.append((session['id'], session['description']))
     change_active_form.change_active.choices = choice_list
 
-    active_session = db.get_active_session()
+    active_session = [0,"None"]
+    if db.get_active_session():
+        active_session = db.get_active_session()
+
     print("ACTIVE SESSION", active_session)
 
     if change_active_form.validate_on_submit():

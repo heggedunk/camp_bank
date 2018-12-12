@@ -81,6 +81,7 @@ def post_transaction(camper_id, time, item_id, amount):
     INSERT INTO "transaction" (camper_id, time, item_id, amount)
     VALUES (%(camper_id)s, %(time)s, %(item_id)s,%(amount)s)'''
     g.cursor.execute(query, {'camper_id': camper_id, 'time': time, 'item_id': item_id, 'amount': amount})
+    g.connection.commit()
     return g.cursor.rowcount
 
 
@@ -88,8 +89,7 @@ def find_transactions(id):
     query = '''
     SELECT *
     FROM transaction
-    INNER JOIN transaction ON transaction.camper_id = camper.id
-    WHERE camper.id = %(id)s'''
+    WHERE transaction.camper_id = %(id)s'''
     g.cursor.execute(query, {'id': id})
     return g.cursor.fetchall()
 
